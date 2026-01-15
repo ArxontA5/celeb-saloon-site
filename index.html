@@ -76,7 +76,7 @@
         href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Oswald:wght@300;400;500;700&family=Noto+Sans+Kannada:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (CDN for prototype, would be build step in production) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -97,12 +97,11 @@
                         heading: ['Oswald', 'sans-serif'],
                         kannada: ['"Noto Sans Kannada"', 'sans-serif'],
                     },
-                    backgroundImage: {
-                        'hero-pattern': "linear-gradient(to bottom, rgba(23, 23, 23, 0.3), rgba(23, 23, 23, 0.9)), url('images/hero.webp')",
-                    }
+                    // Hero pattern removed for LCP, moved to HTML image tags
                 }
             }
         }
+
     </script>
 
     <!-- Custom Styles -->
@@ -356,9 +355,17 @@
     </nav>
 
     <!-- Hero Section -->
-    <section
-        class="relative h-screen flex items-center justify-center bg-hero-pattern bg-cover bg-center bg-no-repeat bg-fixed">
-        <div class="absolute inset-0 bg-black/40"></div>
+    <section class="relative h-screen flex items-center justify-center bg-neutral-900">
+        <!-- LCP Candidate: High Priority Hero Image -->
+        <img src="images/hero.webp" alt="Celeb Saloon Industrial Luxury Interior"
+            class="absolute inset-0 w-full h-full object-cover" width="1920" height="1080" fetchpriority="high"
+            decoding="async">
+
+        <!-- Dark Gradient Overlay -->
+        <div
+            class="absolute inset-0 bg-gradient-to-b from-neutral-900/30 via-neutral-900/50 to-neutral-900/90 mix-blend-multiply">
+        </div>
+
         <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16">
             <h2 class="text-[#C07A50] text-lg md:text-xl font-bold tracking-[0.3em] uppercase mb-2 animate-fade-in-up">
                 Premium Unisex Grooming
@@ -386,7 +393,7 @@
                     <div class="moving-scissor">
                         <div class="scissor-runner">
                             <!-- Scissor SVG -->
-                            <img src="images/scissor.svg" alt="Scissor"
+                            <img src="images/scissor.svg" alt="Scissor" width="160" height="160"
                                 class="w-40 h-40 transform -rotate-180 drop-shadow-[0_0_15px_rgba(192,122,80,0.6)]">
                         </div>
                     </div>
@@ -458,7 +465,8 @@
                     <!-- Image Container -->
                     <div
                         class="relative z-10 overflow-hidden shadow-2xl aspect-[4/5] md:aspect-[16/10] lg:aspect-square xl:aspect-[4/5] bg-neutral-800">
-                        <img src="images/vibe.webp" alt="Premium Salon Interior"
+                        <img src="images/vibe.webp" alt="Premium Salon Interior" width="800" height="1000"
+                            loading="lazy"
                             class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-1000 object-cover transform group-hover:scale-110">
                     </div>
 
@@ -493,7 +501,7 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 h-[600px] md:h-[800px]">
                 <!-- Large Feature Image -->
                 <div class="col-span-2 row-span-2 relative group overflow-hidden reveal-on-scroll">
-                    <img src="images/gallery/item1.webp" alt="Gallery Image 1"
+                    <img src="images/gallery/item1.webp" alt="Gallery Image 1" width="800" height="800" loading="lazy"
                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-110"
                         onerror="this.src='images/hero.webp'; this.classList.add('opacity-100')">
                     <div
@@ -558,8 +566,10 @@
                 <div
                     class="bg-neutral-900 p-10 border border-white/5 hover:border-[#C07A50] transition-colors duration-300 group hover:-translate-y-2 transform relative overflow-hidden reveal-on-scroll">
                     <!-- Background Visual -->
-                    <div class="absolute inset-0 opacity-10 group-hover:opacity-30 transition-all duration-700 bg-cover bg-center grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100"
-                        style="background-image: url('images/close-up.webp')"></div>
+                    <img src="images/close-up.webp" alt="Haircut Background Detail" width="600" height="400"
+                        loading="lazy"
+                        class="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-30 transition-all duration-700 grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100">
+
                     <div class="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/40 transition-colors">
                     </div>
 
@@ -591,8 +601,10 @@
                 <!-- Card 2: Shave -->
                 <div
                     class="bg-neutral-900 p-10 border border-white/5 hover:border-[#C07A50] transition-colors duration-300 group hover:-translate-y-2 transform relative overflow-hidden reveal-on-scroll delay-100">
-                    <div class="absolute inset-0 opacity-20 group-hover:opacity-50 transition-all duration-700 bg-cover bg-center grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100"
-                        style="background-image: url('images/gallery-1.webp')"></div>
+                    <img src="images/gallery-1.webp" alt="Shave Background Detail" width="600" height="400"
+                        loading="lazy"
+                        class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-50 transition-all duration-700 grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100">
+
                     <div class="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/40 transition-colors">
                     </div>
 
@@ -623,8 +635,10 @@
                 <!-- Card 3: Reset -->
                 <div
                     class="bg-neutral-900 p-10 border border-white/5 hover:border-[#C07A50] transition-colors duration-300 group hover:-translate-y-2 transform relative overflow-hidden reveal-on-scroll delay-200">
-                    <div class="absolute inset-0 opacity-10 group-hover:opacity-30 transition-all duration-700 bg-cover bg-center grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100"
-                        style="background-image: url('images/background-1.webp')"></div>
+                    <img src="images/background-1.webp" alt="Reset Treatment Background" width="600" height="400"
+                        loading="lazy"
+                        class="absolute inset-0 w-full h-full object-cover opacity-10 group-hover:opacity-30 transition-all duration-700 grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100">
+
                     <div class="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/40 transition-colors">
                     </div>
 
