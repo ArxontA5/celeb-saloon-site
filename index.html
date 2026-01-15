@@ -76,7 +76,7 @@
         href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Oswald:wght@300;400;500;700&family=Noto+Sans+Kannada:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <!-- Tailwind CSS (CDN for prototype, would be build step in production) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -103,7 +103,6 @@
                 }
             }
         }
-
     </script>
 
     <!-- Custom Styles -->
@@ -153,6 +152,8 @@
         }
 
         .animate-fade-in-up {
+            opacity: 0;
+            /* Start hidden */
             animation: fadeInUp 0.8s ease-out forwards;
         }
 
@@ -242,8 +243,8 @@
             width: 100%;
             height: 100%;
             clip-path: inset(0 100% 0 0);
-            animation: cutSwipe 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-            animation-delay: 0.1s;
+            animation: cutSwipe 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation-delay: 0.5s;
         }
 
         .scissor-icon {
@@ -297,8 +298,8 @@
             top: 0;
             left: 0;
             transform: translate(-50%, -50%);
-            animation: scissorRun 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-            animation-delay: 0.1s;
+            animation: scissorRun 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation-delay: 0.5s;
             opacity: 0;
         }
 
@@ -358,7 +359,6 @@
     <section
         class="relative h-screen flex items-center justify-center bg-hero-pattern bg-cover bg-center bg-no-repeat bg-fixed">
         <div class="absolute inset-0 bg-black/40"></div>
-
         <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16">
             <h2 class="text-[#C07A50] text-lg md:text-xl font-bold tracking-[0.3em] uppercase mb-2 animate-fade-in-up">
                 Premium Unisex Grooming
@@ -386,7 +386,7 @@
                     <div class="moving-scissor">
                         <div class="scissor-runner">
                             <!-- Scissor SVG -->
-                            <img src="images/scissor.svg" alt="Scissor" width="160" height="160"
+                            <img src="images/scissor.svg" alt="Scissor"
                                 class="w-40 h-40 transform -rotate-180 drop-shadow-[0_0_15px_rgba(192,122,80,0.6)]">
                         </div>
                     </div>
@@ -458,8 +458,7 @@
                     <!-- Image Container -->
                     <div
                         class="relative z-10 overflow-hidden shadow-2xl aspect-[4/5] md:aspect-[16/10] lg:aspect-square xl:aspect-[4/5] bg-neutral-800">
-                        <img src="images/vibe.webp" alt="Premium Salon Interior" width="800" height="1000"
-                            loading="lazy"
+                        <img src="images/vibe.webp" alt="Premium Salon Interior"
                             class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-1000 object-cover transform group-hover:scale-110">
                     </div>
 
@@ -494,7 +493,7 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 h-[600px] md:h-[800px]">
                 <!-- Large Feature Image -->
                 <div class="col-span-2 row-span-2 relative group overflow-hidden reveal-on-scroll">
-                    <img src="images/gallery/item1.webp" alt="Gallery Image 1" width="800" height="800" loading="lazy"
+                    <img src="images/gallery/item1.webp" alt="Gallery Image 1"
                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-110"
                         onerror="this.src='images/hero.webp'; this.classList.add('opacity-100')">
                     <div
@@ -665,7 +664,7 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section id="reviews" class="py-24 bg-neutral-900 border-t border-white/5 defer-render">
+    <section id="reviews" class="py-24 bg-neutral-900 border-t border-white/5">
         <div class="container mx-auto px-6">
             <div class="flex flex-col items-center text-center mb-16 reveal-on-scroll">
                 <div class="flex items-center gap-2 mb-4">
@@ -722,7 +721,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-black py-20 border-t border-[#C07A50]/10 relative z-10 reveal-on-scroll defer-render">
+    <footer class="bg-black py-20 border-t border-[#C07A50]/10 relative z-10 reveal-on-scroll">
         <div class="container mx-auto px-6 flex flex-col items-center">
             <h2 class="text-3xl font-heading font-bold text-white tracking-[0.3em] mb-8">CELEB SALOON</h2>
 
