@@ -13,6 +13,9 @@
         content="Men's Salon Shivamogga, Barber Shop Shivamogga, Premium Haircut Karnataka, Beard Trim Shivamogga, Hot Towel Shave, Industrial Interior, Luxury Grooming, Celeb Saloon Shivamogga">
     <meta name="author" content="Celeb Saloon">
 
+    <!-- Preload Critical Hero Image for LCP -->
+    <link rel="preload" as="image" href="images/hero.webp" type="image/webp">
+
     <!-- Local SEO & Geo Tags -->
     <meta name="geo.region" content="IN-KA">
     <meta name="geo.placename" content="Shivamogga">
@@ -151,8 +154,6 @@
         }
 
         .animate-fade-in-up {
-            opacity: 0;
-            /* Start hidden */
             animation: fadeInUp 0.8s ease-out forwards;
         }
 
@@ -182,6 +183,13 @@
         .reveal-on-scroll.is-visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Content Visibility Optimization for Off-screen content */
+        .defer-render {
+            content-visibility: auto;
+            contain-intrinsic-size: 1000px;
+            /* Approximate height of sections to prevent scrollbar jumping */
         }
 
         /* Mobile Scroll Color Activation */
@@ -242,8 +250,8 @@
             width: 100%;
             height: 100%;
             clip-path: inset(0 100% 0 0);
-            animation: cutSwipe 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-            animation-delay: 0.5s;
+            animation: cutSwipe 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation-delay: 0.1s;
         }
 
         .scissor-icon {
@@ -297,8 +305,8 @@
             top: 0;
             left: 0;
             transform: translate(-50%, -50%);
-            animation: scissorRun 2.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-            animation-delay: 0.5s;
+            animation: scissorRun 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation-delay: 0.1s;
             opacity: 0;
         }
 
@@ -427,7 +435,7 @@
     </section>
 
     <!-- The Vibe Section -->
-    <section id="vibe" class="py-24 bg-neutral-900 border-b border-white/5">
+    <section id="vibe" class="py-24 bg-neutral-900 border-b border-white/5 defer-render">
         <div class="container mx-auto px-6">
             <div class="flex flex-col lg:flex-row items-center gap-16">
                 <!-- Text Content -->
@@ -484,7 +492,7 @@
     </section>
 
     <!-- Photo Gallery Section -->
-    <section id="gallery" class="py-24 bg-black overflow-hidden">
+    <section id="gallery" class="py-24 bg-black overflow-hidden defer-render">
         <div class="container mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-on-scroll">
                 <div>
@@ -549,7 +557,7 @@
     </section>
 
     <!-- Services Grid -->
-    <section id="services" class="py-24 bg-neutral-850 relative overflow-hidden">
+    <section id="services" class="py-24 bg-neutral-850 relative overflow-hidden defer-render">
         <!-- Background Elements -->
         <div class="absolute top-0 left-0 w-64 h-64 bg-[#C07A50]/5 rounded-full blur-3xl"></div>
         <div class="absolute bottom-0 right-0 w-96 h-96 bg-[#C07A50]/5 rounded-full blur-3xl"></div>
@@ -678,7 +686,7 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section id="reviews" class="py-24 bg-neutral-900 border-t border-white/5">
+    <section id="reviews" class="py-24 bg-neutral-900 border-t border-white/5 defer-render">
         <div class="container mx-auto px-6">
             <div class="flex flex-col items-center text-center mb-16 reveal-on-scroll">
                 <div class="flex items-center gap-2 mb-4">
@@ -735,7 +743,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-black py-20 border-t border-[#C07A50]/10 relative z-10 reveal-on-scroll">
+    <footer class="bg-black py-20 border-t border-[#C07A50]/10 relative z-10 reveal-on-scroll defer-render">
         <div class="container mx-auto px-6 flex flex-col items-center">
             <h2 class="text-3xl font-heading font-bold text-white tracking-[0.3em] mb-8">CELEB SALOON</h2>
 
