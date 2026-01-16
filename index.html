@@ -347,7 +347,7 @@
             </div>
 
             <!-- CTA Button -->
-            <a href="https://wa.me/91XXXXXXXXXX?text=Hello!%20I'd%20like%20to%20book%20an%20appointment%20at%20Celeb%20Saloon."
+            <a href="https://wa.me/918088406050?text=Hello!%20I'd%20like%20to%20book%20an%20appointment%20at%20Celeb%20Saloon."
                 target="_blank"
                 class="bg-[#C07A50] hover:bg-[#A0633E] text-white px-6 py-2 rounded-sm font-heading font-bold tracking-wide transition-all transform hover:scale-105 shadow-[0_0_15px_rgba(192,122,80,0.3)] inline-block">
                 BOOK NOW
@@ -655,7 +655,7 @@
             </div>
 
             <div class="text-center mt-12 reveal-on-scroll delay-300">
-                <button
+                <button id="menu-btn"
                     class="inline-block border border-[#C07A50] text-[#C07A50] hover:bg-[#C07A50] hover:text-white px-10 py-3 uppercase tracking-widest font-bold transition-all duration-300">
                     View Full Menu
                 </button>
@@ -893,6 +893,17 @@
         } else {
             initReviews();
         }
+
+        // View Full Menu Button Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('menu-btn');
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function () {
+                    this.textContent = "Coming Soon..";
+                    this.classList.add('cursor-not-allowed', 'opacity-75');
+                });
+            }
+        });
     </script>
 </body>
 
