@@ -113,7 +113,7 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #171717;
+            background: #0f0f0f;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -125,12 +125,95 @@
             background: #C07A50;
         }
 
-        /* Glassmorphism Navigation */
+        /* Global Noise Texture */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Custom Cursor */
+        .cursor-dot,
+        .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #C07A50;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(192, 122, 80, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+
+        body:hover .cursor-outline {
+            opacity: 1;
+        }
+
+        /* Expansion effect for cursor */
+        body.hovering-link .cursor-outline {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(192, 122, 80, 0.1);
+            border-color: #C07A50;
+        }
+
+        @media (hover: none) {
+
+            .cursor-dot,
+            .cursor-outline {
+                display: none;
+            }
+        }
+
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background-color: #0d0d0d;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: #C07A50;
+        }
+
+        .loader-line {
+            width: 0;
+            height: 2px;
+            background-color: #C07A50;
+            margin: 20px auto;
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Glassmorphism Navigation - Updated */
         .glass-nav {
-            background: rgba(23, 23, 23, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(13, 13, 13, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         /* Text Utilities */
@@ -224,6 +307,20 @@
         }
 
         /* Scissor Cut Animation */
+        @keyframes slowZoom {
+            0% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.1);
+            }
+        }
+
+        .animate-slow-zoom {
+            animation: slowZoom 20s linear infinite alternate;
+        }
+
         .cut-wrapper {
             position: relative;
             display: inline-block;
@@ -232,7 +329,6 @@
         .cut-video-blur {
             filter: blur(8px);
             opacity: 0.3;
-            /* Using brand font as per user request to roll back font design */
             user-select: none;
         }
 
@@ -247,28 +343,6 @@
             animation-delay: 0.5s;
         }
 
-        .scissor-icon {
-            position: absolute;
-            top: 50%;
-            right: -20px;
-            /* Icon size offset */
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            z-index: 20;
-            color: #070707;
-            filter: drop-shadow(0 0 5px rgba(192, 122, 80, 0.5));
-        }
-
-        .cut-reveal-layer .scissor-wrapper {
-            position: absolute;
-            inset: 0;
-            /* Container for the moving scissor relative to the clip */
-            width: 100%;
-            height: 100%;
-            /* Not needed for clip-path logic actually, scissor needs to follow the clip edge */
-        }
-
         @keyframes cutSwipe {
             0% {
                 clip-path: inset(0 100% 0 0);
@@ -279,17 +353,12 @@
             }
         }
 
-        /* Scissor Motion helper - The scissor stays on the right edge of the visible clip area 
-           Actually, attaching it to the reveal layer edge is tricky with basic CSS clip-path.
-           Easier Method: Animate separate div for scissor with same timing.
-        */
         .moving-scissor {
             position: absolute;
             top: 50%;
             left: 0;
             width: 100%;
             height: 0px;
-            /* Logic layer */
             pointer-events: none;
         }
 
@@ -316,13 +385,27 @@
             100% {
                 left: 100%;
                 opacity: 0;
-                /* Fade out at end */
             }
         }
     </style>
 </head>
 
-<body class="bg-neutral-900 text-gray-200 font-sans antialiased">
+<body class="bg-[#0d0d0d] text-gray-200 font-sans antialiased cursor-none">
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <h1 class="text-3xl font-heading font-bold tracking-[0.5em] text-white">CELEB SALOON</h1>
+            <div class="loader-line"></div>
+        </div>
+    </div>
+
+    <!-- Global Noise Overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <!-- Navigation -->
     <nav class="fixed w-full z-50 transition-all duration-300 glass-nav">
@@ -356,309 +439,327 @@
     </nav>
 
     <!-- Hero Section -->
-    <section
-        class="relative h-screen flex items-center justify-center bg-hero-pattern bg-cover bg-center bg-no-repeat bg-scroll md:bg-fixed">
-        <div class="absolute inset-0 bg-black/40"></div>
-        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16">
-            <h2 class="text-[#C07A50] text-lg md:text-xl font-bold tracking-[0.3em] uppercase mb-2 animate-fade-in-up">
-                Premium Unisex Grooming
-            </h2>
-            <div class="text-gray-400 text-xs font-bold tracking-[0.5em] uppercase mb-6 animate-fade-in-up delay-75">
-                EST. 2012
-            </div>
-            <div class="mb-8 relative z-10">
-                <div class="cut-wrapper">
-                    <!-- Layer 1: The "Unclear" Text (Base) -->
-                    <div class="text-6xl md:text-8xl font-heading font-bold text-white leading-tight cut-video-blur">
-                        ELEVATE YOUR <br />
-                        <span class="text-gray-400">EVERYDAY</span>
-                    </div>
+    <section class="relative h-screen w-full overflow-hidden bg-neutral-900">
+        <!-- Background with Parallax Scale -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent z-10"></div>
+            <img src="images/hero.webp" alt="Hero Background"
+                class="w-full h-full object-cover object-center scale-105 animate-slow-zoom">
+        </div>
 
-                    <!-- Layer 2: The "Sharp" Text (Reveal) -->
-                    <div
-                        class="text-6xl md:text-8xl font-heading font-bold text-white leading-tight text-shadow cut-reveal-layer">
-                        ELEVATE YOUR <br />
-                        <span
-                            class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-500">EVERYDAY</span>
-                    </div>
+        <div class="relative z-10 container mx-auto px-6 h-full flex flex-col justify-center">
+            <div class="max-w-4xl">
+                <div class="flex items-center gap-4 mb-6 animate-fade-in-up">
+                    <div class="w-12 h-[1px] bg-[#C07A50]"></div>
+                    <span class="text-[#C07A50] text-sm md:text-base font-bold tracking-[0.4em] uppercase">
+                        Premium Unisex Grooming
+                    </span>
+                </div>
 
-                    <!-- Layer 3: The Scissor Runner -->
-                    <div class="moving-scissor">
-                        <div class="scissor-runner">
-                            <!-- Scissor SVG -->
-                            <img src="images/scissor.svg" alt="Scissor"
-                                class="w-40 h-40 transform -rotate-180 drop-shadow-[0_0_15px_rgba(192,122,80,0.6)]">
+                <div class="mb-10 relative">
+                    <div class="cut-wrapper">
+                        <!-- Layer 1: The "Unclear" Text (Base) -->
+                        <h1
+                            class="text-7xl md:text-9xl font-heading font-bold text-white leading-[0.9] cut-video-blur opacity-50">
+                            ELEVATE <br />
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-800">EVERYDAY</span>
+                        </h1>
+
+                        <!-- Layer 2: The "Sharp" Text (Reveal) -->
+                        <div class="cut-reveal-layer">
+                            <h1 class="text-7xl md:text-9xl font-heading font-bold text-white leading-[0.9]">
+                                ELEVATE <br />
+                                <span
+                                    class="text-transparent bg-clip-text bg-gradient-to-r from-[#C07A50] via-amber-200 to-[#C07A50]">EVERYDAY</span>
+                            </h1>
+                        </div>
+
+                        <!-- Layer 3: The Scissor Runner -->
+                        <div class="moving-scissor">
+                            <div class="scissor-runner">
+                                <img src="images/scissor.svg" alt="Scissor"
+                                    class="w-32 h-32 transform -rotate-180 drop-shadow-[0_0_20px_rgba(192,122,80,0.8)]">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <p class="text-gray-300 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light animate-fade-in-up delay-200">
-                Bringing you the finest in trendy cuts and refreshing treatments with unmatched hygiene. Because style
-                is always better when it’s <span class="text-[#C07A50] font-medium">Swalpa Classy, Swalpa Masti</span>
-                <span class="font-kannada font-bold">(ಸ್ವಲ್ಪ classy, ಸ್ವಲ್ಪ ಮಸ್ತಿ)</span>!
-            </p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center animate-fade-in-up delay-300">
-                <a href="https://wa.me/91XXXXXXXXXX?text=Hello!%20I'd%20like%20to%20book%20an%20appointment%20at%20Celeb%20Saloon."
-                    target="_blank"
-                    class="bg-[#C07A50] hover:bg-[#A0633E] text-white px-8 py-4 text-lg font-heading font-bold tracking-widest uppercase transition-all transform hover:-translate-y-1 shadow-lg inline-block">
-                    Book Appointment
-                </a>
-                <a href="#services"
-                    class="border border-gray-500 hover:border-white text-gray-300 hover:text-white px-8 py-4 text-lg font-heading font-bold tracking-widest uppercase transition-all backdrop-blur-sm inline-block">
-                    View Services
-                </a>
+
+                <p
+                    class="text-gray-300 text-lg md:text-xl mb-12 max-w-xl font-light leading-relaxed animate-fade-in-up delay-200 border-l border-white/20 pl-6">
+                    Looking sharp isn’t just about the cut—it’s about the feeling.
+                    Experience the perfect blend of
+                    <span class="text-white font-medium">Classy & Masti</span> in an atmosphere built for the modern
+                    icon.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-6 animate-fade-in-up delay-300">
+                    <a href="https://wa.me/918088406050?text=Hello!%20I'd%20like%20to%20book%20an%20appointment%20at%20Celeb%20Saloon."
+                        target="_blank"
+                        class="group relative px-8 py-4 bg-[#C07A50] text-white font-heading font-bold tracking-widest uppercase overflow-hidden">
+                        <span class="relative z-10 group-hover:text-white transition-colors">Book Appointment</span>
+                        <div
+                            class="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 mix-blend-overlay">
+                        </div>
+                    </a>
+                    <a href="#services"
+                        class="group px-8 py-4 border border-white/20 text-white font-heading font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all">
+                        View Menu
+                    </a>
+                </div>
             </div>
         </div>
 
         <!-- Scroll Indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3">
-                </path>
-            </svg>
+        <div class="absolute bottom-10 right-10 flex flex-col items-center gap-4 animate-fade-in-up delay-300">
+            <span
+                class="text-xs font-bold tracking-widest text-gray-500 uppercase rotate-90 origin-right translate-y-8">Scroll</span>
+            <div class="w-[1px] h-24 bg-gradient-to-b from-transparent via-gray-500 to-transparent"></div>
         </div>
     </section>
 
-    <!-- The Vibe Section -->
-    <section id="vibe" class="py-24 bg-neutral-900 border-b border-white/5">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col lg:flex-row items-center gap-16">
-                <!-- Text Content -->
-                <div class="lg:w-1/2 lg:pr-12 reveal-on-scroll">
-                    <div class="w-16 h-1 bg-[#C07A50] mb-8"></div>
-                    <h2 class="text-4xl md:text-5xl font-heading font-bold text-white mb-6 leading-tight">
-                        A VIBE LIKE NO OTHER <br /><span class="text-[#C07A50]">FOR THE MODERN GENTLEMAN</span>
-                    </h2>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
-                        We take pride in giving you the best and latest in hair styles and beauty treatment, following
-                        the highest level of style, sensibility and hygiene.
-                    </p>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
-                        Our master barbers don't just cut hair; they sculpt confidence. We believe that looking sharp is
-                        a mindset, and it starts the moment you sit in the chair.
-                    </p>
-                    <a href="#about"
-                        class="inline-flex items-center text-[#C07A50] font-bold tracking-wider uppercase hover:text-white transition-colors group">
-                        Discover Our Story
-                        <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                    </a>
+    <!-- The Vibe Section (Redesigned) -->
+    <section id="vibe" class="relative py-32 bg-neutral-900 overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+                <!-- Visual (Spans 7 columns) -->
+                <div class="lg:col-span-7 relative group reveal-on-scroll">
+                    <div class="relative overflow-hidden aspect-[4/3]">
+                        <img src="images/vibe.webp" alt="Interior Vibe"
+                            class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 grayscale group-hover:grayscale-0">
+                        <div
+                            class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500">
+                        </div>
+                    </div>
+                    <!-- decorative typographic element -->
+                    <div class="absolute -bottom-10 -left-10 hidden md:block">
+                        <span class="text-9xl font-heading font-bold text-white/5 select-none">VIBE</span>
+                    </div>
                 </div>
 
-                <!-- Visual Content -->
-                <div class="lg:w-1/2 relative group reveal-on-scroll delay-200">
-                    <!-- Decorative Floating Border -->
-                    <div
-                        class="absolute -inset-4 border-2 border-[#C07A50]/30 z-0 transform translate-x-4 translate-y-4 group-hover:translate-x-2 group-hover:translate-y-2 transition-all duration-700">
-                    </div>
-
-                    <!-- Image Container -->
-                    <div
-                        class="relative z-10 overflow-hidden shadow-2xl aspect-[4/5] md:aspect-[16/10] lg:aspect-square xl:aspect-[4/5] bg-neutral-800">
-                        <img src="images/vibe.webp" alt="Premium Salon Interior"
-                            class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-1000 object-cover transform group-hover:scale-110">
-                    </div>
-
-                    <!-- Subtle Caption Overlay -->
-                    <div
-                        class="absolute bottom-6 left-6 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                        <p
-                            class="text-white font-heading font-bold tracking-widest text-sm uppercase bg-black/40 backdrop-blur-md px-4 py-2">
-                            The Sanctuary
+                <!-- Content (Spans 5 columns, overlaps visually on desktop) -->
+                <div class="lg:col-span-5 lg:-ml-20 relative z-20 reveal-on-scroll delay-100">
+                    <div class="bg-neutral-850/90 backdrop-blur-xl p-8 md:p-12 border border-white/5 shadow-2xl">
+                        <span class="text-[#C07A50] font-bold tracking-widest uppercase text-sm mb-4 block">The
+                            Atmosphere</span>
+                        <h2 class="text-4xl md:text-5xl font-heading font-bold text-white mb-6 leading-tight">
+                            INDUSTRIAL <br />LUXE & <br /><span class="text-gray-500">GRIT</span>
+                        </h2>
+                        <p class="text-gray-400 leading-relaxed mb-8">
+                            We don't just sell haircuts; we sell a state of mind. Surrounded by exposed brick, warm
+                            amber lighting, and the hum of precision tools, you'll find a sanctuary designed for the
+                            modern gentleman.
                         </p>
+
+                        <div class="flex items-center gap-4">
+                            <div class="flex -space-x-4">
+                                <img class="w-12 h-12 rounded-full border-2 border-neutral-800"
+                                    src="images/club/club-mem0.webp" alt="">
+                                <img class="w-12 h-12 rounded-full border-2 border-neutral-800"
+                                    src="images/club/club-mem2.webp" alt="">
+                                <img class="w-12 h-12 rounded-full border-2 border-neutral-800"
+                                    src="images/club/club-mem3.webp" alt="">
+                            </div>
+                            <div class="text-sm font-medium text-white">
+                                <span class="block text-[#C07A50]">Join the club</span>
+                                <span>Find your new look</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Photo Gallery Section -->
-    <section id="gallery" class="py-24 bg-black overflow-hidden">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal-on-scroll">
+    <!-- Photo Gallery Section (Redesigned) -->
+    <section id="gallery" class="py-32 bg-black overflow-hidden relative">
+        <!-- Geometric Decoration -->
+        <div
+            class="absolute top-0 right-0 w-[500px] h-[500px] bg-neutral-900 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2 pointer-events-none">
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 reveal-on-scroll">
                 <div>
                     <span class="text-[#C07A50] font-bold tracking-widest uppercase text-sm mb-2 block">Visual
                         Experience</span>
-                    <h2 class="text-4xl md:text-5xl font-heading font-bold text-white uppercase">The Gallery</h2>
+                    <h2 class="text-4xl md:text-6xl font-heading font-bold text-white uppercase">The Gallery</h2>
                 </div>
-                <div class="text-gray-500 font-medium tracking-widest text-sm mt-4 md:mt-0 uppercase">
-                    Captured Excellence
-                </div>
+                <!-- Instagram Link -->
+                <a href="https://www.instagram.com/celebsalonshimoga/" target="_blank"
+                    class="hidden md:flex items-center gap-2 text-gray-400 hover:text-white transition-colors group">
+                    <span class="uppercase tracking-widest text-xs font-bold">@celebsalonshimoga</span>
+                    <svg class="w-4 h-4 transform group-hover:rotate-45 transition-transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                </a>
             </div>
 
-            <!-- Asymmetrical Grid Layout -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 h-[600px] md:h-[800px]">
-                <!-- Large Feature Image -->
-                <div class="col-span-2 row-span-2 relative group overflow-hidden reveal-on-scroll">
-                    <img src="images/gallery/item1.webp" alt="Gallery Image 1"
-                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-110"
-                        onerror="this.src='images/hero.webp'; this.classList.add('opacity-100')">
+            <!-- Masonry Grid using CSS Columns -->
+            <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+
+                <!-- Item 1 -->
+                <div class="break-inside-avoid relative group overflow-hidden mb-8 reveal-on-scroll">
+                    <img src="images/gallery/item1.webp" alt="Gallery Image"
+                        class="w-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                        onerror="this.src='images/hero.webp'">
                     <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                        <span class="text-white font-heading font-bold tracking-widest uppercase">The Atmosphere</span>
+                        class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                        <span
+                            class="text-white font-heading tracking-widest uppercase border border-white/30 px-4 py-2 bg-black/30 backdrop-blur-sm">Interior</span>
                     </div>
                 </div>
 
-                <!-- Column 2 Top -->
-                <div class="relative group overflow-hidden reveal-on-scroll delay-100">
-                    <img src="images/gallery/item2.jpg" alt="Gallery Image 2"
-                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-110"
-                        onerror="this.src='images/vibe.webp'; this.classList.add('opacity-100')">
+                <!-- Item 2 -->
+                <div class="break-inside-avoid relative group overflow-hidden mb-8 reveal-on-scroll delay-100">
+                    <img src="images/gallery/item2.webp" alt="Gallery Image"
+                        class="w-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                        onerror="this.src='images/vibe.webp'">
                 </div>
 
-                <!-- Column 2 Bottom -->
-                <div class="relative group overflow-hidden reveal-on-scroll delay-200">
-                    <img src="images/gallery/item3.jpg" alt="Gallery Image 3"
-                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-110"
-                        onerror="this.src='images/graffiti-1.webp'; this.classList.add('opacity-100')">
+                <!-- Item 3 -->
+                <div class="break-inside-avoid relative group overflow-hidden mb-8 reveal-on-scroll delay-200">
+                    <!-- Text Block insert -->
+                    <div
+                        class="bg-neutral-900 p-8 border border-white/5 text-center flex flex-col justify-center items-center h-full min-h-[300px]">
+                        <svg class="w-12 h-12 text-[#C07A50] mb-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                        </svg>
+                        <p class="text-gray-400 font-heading text-xl uppercase tracking-widest leading-relaxed">
+                            "More than a cut.<br> It's a ritual."
+                        </p>
+                    </div>
                 </div>
 
-                <!-- Column 3 Top -->
-                <div class="relative group overflow-hidden reveal-on-scroll delay-300">
-                    <img src="images/gallery/item4.jpg" alt="Gallery Image 4"
-                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-110"
-                        onerror="this.src='images/close-up.webp'; this.classList.add('opacity-100')">
+                <!-- Item 4 -->
+                <div class="break-inside-avoid relative group overflow-hidden mb-8 reveal-on-scroll">
+                    <img src="images/gallery/item3.webp" alt="Gallery Image"
+                        class="w-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                        onerror="this.src='images/graffiti-1.webp'">
                 </div>
 
-                <!-- Column 3 Bottom (Wide) -->
-                <div class="col-span-1 md:col-span-1 relative group overflow-hidden reveal-on-scroll delay-400">
-                    <img src="images/gallery/item5.jpg" alt="Gallery Image 5"
-                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-110"
-                        onerror="this.src='images/background-1.webp'; this.classList.add('opacity-100')">
+                <!-- Item 5 -->
+                <div class="break-inside-avoid relative group overflow-hidden mb-8 reveal-on-scroll delay-100">
+                    <img src="images/gallery/item4.webp" alt="Gallery Image"
+                        class="w-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                        onerror="this.src='images/close-up.webp'">
                 </div>
+
+                <!-- Item 6 -->
+                <div class="break-inside-avoid relative group overflow-hidden mb-8 reveal-on-scroll delay-200">
+                    <img src="images/gallery/item5.webp" alt="Gallery Image"
+                        class="w-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                        onerror="this.src='images/background-1.webp'">
+                </div>
+
             </div>
 
-            <div class="mt-12 text-center reveal-on-scroll">
+            <div class="mt-12 text-center md:hidden reveal-on-scroll">
                 <a href="https://www.instagram.com/celebsalonshimoga/"
                     class="inline-block text-[#C07A50] font-bold tracking-[0.3em] uppercase border-b border-[#C07A50]/30 hover:border-[#C07A50] hover:text-white transition-all pb-2">
-                    Follow us on Instagram @celebsalonshimoga
+                    Follow on Instagram
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Services Grid -->
-    <section id="services" class="py-24 bg-neutral-850 relative overflow-hidden">
-        <!-- Background Elements -->
-        <div class="absolute top-0 left-0 w-64 h-64 bg-[#C07A50]/5 rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-[#C07A50]/5 rounded-full blur-3xl"></div>
-
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="text-center mb-16 reveal-on-scroll">
-                <span class="text-[#C07A50] font-bold tracking-widest uppercase text-sm mb-2 block">Our Expertise</span>
-                <h2 class="text-4xl md:text-5xl font-heading font-bold text-white">SERVICES MENU</h2>
-            </div>
-
-            <!-- Grid: Stack on mobile (grid-cols-1), 3 cols on desktop -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Card 1: Cut -->
-                <div
-                    class="bg-neutral-900 p-10 border border-white/5 hover:border-[#C07A50] transition-colors duration-300 group hover:-translate-y-2 transform relative overflow-hidden reveal-on-scroll">
-                    <!-- Background Visual -->
-                    <div class="absolute inset-0 opacity-10 group-hover:opacity-30 transition-all duration-700 bg-cover bg-center grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100"
-                        style="background-image: url('images/close-up.webp')"></div>
-                    <div class="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/40 transition-colors">
+    <!-- Services Menu (Redesigned) -->
+    <section id="services" class="py-32 bg-neutral-900 border-b border-white/5 relative">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row gap-20">
+                <!-- Left: Service List -->
+                <div class="lg:w-1/2 w-full z-10">
+                    <div class="mb-16 reveal-on-scroll">
+                        <span class="text-[#C07A50] font-bold tracking-widest uppercase text-sm mb-2 block">Our
+                            Expertise</span>
+                        <h2 class="text-4xl md:text-6xl font-heading font-bold text-white mb-6">MENU</h2>
+                        <p class="text-gray-400 max-w-md">Precision cutting tailored to your head shape and style. Sit
+                            back, relax, and let the experts handle it.</p>
                     </div>
 
-                    <div class="relative z-10">
-                        <div
-                            class="absolute top-0 right-0 w-24 h-24 bg-[#C07A50]/10 rounded-full blur-2xl group-hover:bg-[#C07A50]/20 transition-all">
+                    <div class="space-y-8" id="service-list">
+                        <!-- Item 1 -->
+                        <div class="service-item group cursor-pointer border-b border-white/10 pb-8 hover:border-[#C07A50] transition-colors"
+                            data-image="service-img-1">
+                            <div class="flex justify-between items-baseline mb-2">
+                                <h3
+                                    class="text-3xl font-heading font-medium text-white group-hover:text-[#C07A50] transition-colors">
+                                    The Cut</h3>
+                                <span class="text-xl text-[#C07A50] font-bold">₹ 180</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm text-gray-500 font-medium">
+                                <p class="max-w-[80%]">Consultation, Precision Cut, Wash & Style</p>
+                                <span>45 MIN</span>
+                            </div>
                         </div>
 
-                        <div
-                            class="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mb-8 group-hover:bg-[#C07A50] transition-colors duration-300">
-                            <!-- Scissors Icon -->
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z">
-                                </path>
-                            </svg>
+                        <!-- Item 2 -->
+                        <div class="service-item group cursor-pointer border-b border-white/10 pb-8 hover:border-[#C07A50] transition-colors"
+                            data-image="service-img-2">
+                            <div class="flex justify-between items-baseline mb-2">
+                                <h3
+                                    class="text-3xl font-heading font-medium text-white group-hover:text-[#C07A50] transition-colors">
+                                    The Shave</h3>
+                                <span class="text-xl text-[#C07A50] font-bold">₹ 150</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm text-gray-500 font-medium">
+                                <p class="max-w-[80%]">Hot Towel, Straight Razor, Post-Shave Balm</p>
+                                <span>30 MIN</span>
+                            </div>
                         </div>
 
-                        <h3 class="text-2xl font-heading font-bold text-white mb-4">THE CUT</h3>
-                        <p class="text-gray-400 mb-6 leading-relaxed">Precision cutting tailored to your head shape and
-                            style. Includes wash, style consultation, and hot towel finish.</p>
-                        <div class="flex justify-between items-center text-sm font-medium">
-                            <span class="text-gray-500">45 MINS</span>
-                            <span class="text-[#C07A50] text-lg">₹ 180</span>
+                        <!-- Item 3 -->
+                        <div class="service-item group cursor-pointer border-b border-white/10 pb-8 hover:border-[#C07A50] transition-colors"
+                            data-image="service-img-3">
+                            <div class="flex justify-between items-baseline mb-2">
+                                <h3
+                                    class="text-3xl font-heading font-medium text-white group-hover:text-[#C07A50] transition-colors">
+                                    The Reset</h3>
+                                <span class="text-xl text-[#C07A50] font-bold">₹ 400</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm text-gray-500 font-medium">
+                                <p class="max-w-[80%]">Full Service: Cut + Shave + Face Detan</p>
+                                <span>75 MIN</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Card 2: Shave -->
-                <div
-                    class="bg-neutral-900 p-10 border border-white/5 hover:border-[#C07A50] transition-colors duration-300 group hover:-translate-y-2 transform relative overflow-hidden reveal-on-scroll delay-100">
-                    <div class="absolute inset-0 opacity-20 group-hover:opacity-50 transition-all duration-700 bg-cover bg-center grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100"
-                        style="background-image: url('images/gallery-1.webp')"></div>
-                    <div class="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/40 transition-colors">
-                    </div>
-
-                    <div class="relative z-10">
-                        <div
-                            class="absolute top-0 right-0 w-24 h-24 bg-[#C07A50]/10 rounded-full blur-2xl group-hover:bg-[#C07A50]/20 transition-all">
-                        </div>
-
-                        <div
-                            class="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mb-8 group-hover:bg-[#C07A50] transition-colors duration-300">
-                            <!-- Razor Icon -->
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M19 13l-7 7-7-7m14-8l-7 7-7-7"></path>
-                            </svg>
-                        </div>
-
-                        <h3 class="text-2xl font-heading font-bold text-white mb-4">THE SHAVE</h3>
-                        <p class="text-gray-400 mb-6 leading-relaxed">Traditional straight razor shave with hot towels,
-                            pre-shave oils, and post-shave balm for the ultimate smooth finish.</p>
-                        <div class="flex justify-between items-center text-sm font-medium">
-                            <span class="text-gray-500">30 MINS</span>
-                            <span class="text-[#C07A50] text-lg">₹ 150</span>
-                        </div>
+                    <div class="mt-12 reveal-on-scroll">
+                        <button id="menu-btn"
+                            class="text-sm font-bold tracking-[0.2em] uppercase text-gray-400 hover:text-white border-b border-transparent hover:border-white transition-all pb-1">
+                            View Full Menu
+                        </button>
                     </div>
                 </div>
 
-                <!-- Card 3: Reset -->
-                <div
-                    class="bg-neutral-900 p-10 border border-white/5 hover:border-[#C07A50] transition-colors duration-300 group hover:-translate-y-2 transform relative overflow-hidden reveal-on-scroll delay-200">
-                    <div class="absolute inset-0 opacity-10 group-hover:opacity-30 transition-all duration-700 bg-cover bg-center grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100"
-                        style="background-image: url('images/background-1.webp')"></div>
-                    <div class="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/40 transition-colors">
-                    </div>
+                <!-- Right: Sticky Image Preview (Desktop Only) -->
+                <div class="lg:w-1/2 hidden lg:block relative">
+                    <div class="sticky top-32 h-[600px] w-full overflow-hidden bg-neutral-800">
+                        <!-- Images -->
+                        <img id="service-img-1" src="images/close-up.webp"
+                            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-100 service-preview-img"
+                            alt="The Cut">
+                        <img id="service-img-2" src="images/gallery-1.webp"
+                            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0 service-preview-img"
+                            alt="The Shave" onerror="this.src='images/vibe.webp'">
+                        <img id="service-img-3" src="images/background-1.webp"
+                            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0 service-preview-img"
+                            alt="The Reset" onerror="this.src='images/hero.webp'">
 
-                    <div class="relative z-10">
-                        <div
-                            class="absolute top-0 right-0 w-24 h-24 bg-[#C07A50]/10 rounded-full blur-2xl group-hover:bg-[#C07A50]/20 transition-all">
-                        </div>
+                        <!-- Overlay -->
+                        <div class="absolute inset-0 bg-black/20"></div>
 
-                        <div
-                            class="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mb-8 group-hover:bg-[#C07A50] transition-colors duration-300">
-                            <!-- Sparkle Icon -->
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
-                                </path>
-                            </svg>
-                        </div>
-
-                        <h3 class="text-2xl font-heading font-bold text-white mb-4">THE RESET</h3>
-                        <p class="text-gray-400 mb-6 leading-relaxed">Full service combo: Haircut, beard trim, and
-                            facial treatment. The complete overhaul for the modern man.</p>
-                        <div class="flex justify-between items-center text-sm font-medium">
-                            <span class="text-gray-500">75 MINS</span>
-                            <span class="text-[#C07A50] text-lg">₹ 400</span>
+                        <!-- Decoration -->
+                        <div class="absolute bottom-8 right-8 text-right">
+                            <div class="text-white font-heading text-6xl opacity-20 font-bold">01</div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="text-center mt-12 reveal-on-scroll delay-300">
-                <button id="menu-btn"
-                    class="inline-block border border-[#C07A50] text-[#C07A50] hover:bg-[#C07A50] hover:text-white px-10 py-3 uppercase tracking-widest font-bold transition-all duration-300">
-                    View Full Menu
-                </button>
             </div>
         </div>
     </section>
@@ -720,43 +821,144 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-black py-20 border-t border-[#C07A50]/10 relative z-10 reveal-on-scroll">
-        <div class="container mx-auto px-6 flex flex-col items-center">
-            <h2 class="text-3xl font-heading font-bold text-white tracking-[0.3em] mb-8">CELEB SALOON</h2>
+    <!-- Footer (Redesigned) -->
+    <footer class="bg-neutral-900 pt-32 pb-12 border-t border-white/5 relative z-10">
+        <div class="container mx-auto px-6">
+            <!-- Giant Text -->
+            <h2
+                class="text-[12vw] leading-none font-heading font-bold text-white/10 select-none mb-20 tracking-tighter">
+                CELEB SALOON
+            </h2>
 
-            <div class="flex space-x-8 mb-10">
-                <a href="https://www.instagram.com/celebsalonshimoga/" target="_blank"
-                    class="text-gray-500 hover:text-[#C07A50] transition-colors p-2 border border-white/5 rounded-full hover:border-[#C07A50]/50">
-                    <span class="sr-only">Instagram</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                    </svg>
-                </a>
-                <a href="#"
-                    class="text-gray-500 hover:text-[#C07A50] transition-colors p-2 border border-white/5 rounded-full hover:border-[#C07A50]/50">
-                    <span class="sr-only">Facebook</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-                    </svg>
-                </a>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-t border-white/10 pt-12">
+                <!-- Brand CTA -->
+                <div class="md:col-span-2">
+                    <h3 class="text-3xl font-heading font-bold text-white mb-8">READY TO LOOK YOUR BEST?</h3>
+                    <a href="https://wa.me/918088406050?text=Hello!%20I'd%20like%20to%20book%20an%20appointment%20at%20Celeb%20Saloon."
+                        target="_blank"
+                        class="inline-block bg-[#C07A50] text-white px-10 py-5 font-heading font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all shadow-[0_0_20px_rgba(192,122,80,0.3)]">
+                        Book Your Era
+                    </a>
+                </div>
+
+                <!-- Address -->
+                <div>
+                    <h4 class="text-gray-500 text-sm font-bold uppercase tracking-widest mb-6">Location</h4>
+                    <address class="text-gray-400 not-italic leading-loose">
+                        Jail Road, Shimoga<br>
+                        Karnataka 577201<br>
+                        India
+                    </address>
+                </div>
+
+                <!-- Socials -->
+                <div>
+                    <h4 class="text-gray-500 text-sm font-bold uppercase tracking-widest mb-6">Social</h4>
+                    <div class="flex flex-col gap-4">
+                        <a href="https://www.instagram.com/celebsalonshimoga/" target="_blank"
+                            class="text-gray-400 hover:text-[#C07A50] transition-colors flex items-center gap-2 group">
+                            <span>Instagram</span>
+                            <svg class="w-4 h-4 transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </a>
+                        <a href="#"
+                            class="text-gray-400 hover:text-[#C07A50] transition-colors flex items-center gap-2 group">
+                            <span>Facebook</span>
+                            <svg class="w-4 h-4 transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="text-gray-500 text-sm mb-8 text-center tracking-widest uppercase">
-                Jail Road, Shimoga, Karnataka 577201
-            </div>
-
-            <div class="text-gray-600 text-xs font-bold tracking-[0.2em] uppercase text-center">
-                &copy; 2024 CELEB SALOON. ALL RIGHTS RESERVED. <br class="md:hidden" />
-                <span class="hidden md:inline ml-4 border-l border-gray-800 pl-4">Premium Unisex Grooming Ritual</span>
+            <div
+                class="mt-24 flex flex-col md:flex-row justify-between items-end text-xs text-gray-600 font-bold tracking-widest uppercase border-t border-white/5 pt-8">
+                <span>&copy; 2024 Celeb Saloon. All Rights Reserved.</span>
+                <span class="mt-4 md:mt-0">Premium Unisex Grooming Ritual</span>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script>
+        // Preloader Logic
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            const line = document.querySelector('.loader-line');
+
+            // Start the loading line animation
+            line.style.width = '100px';
+
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 1000);
+        });
+
+        // Custom Cursor Logic
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Dot follows instantly
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+
+            // Outline follows with slight delay (handled by CSS transition, we just set position)
+            // But for smoother trailing effect we can use JS to update coordinates
+            cursorOutline.style.left = `${posX}px`;
+            cursorOutline.style.top = `${posY}px`;
+
+            // Add interaction states
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Hover effect for links and buttons
+        const interactables = document.querySelectorAll('a, button, .group, input, textarea');
+        interactables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                document.body.classList.add('hovering-link');
+            });
+            el.addEventListener('mouseleave', () => {
+                document.body.classList.remove('hovering-link');
+            });
+        });
+
+        // Service Image Hover Logic
+        const serviceItems = document.querySelectorAll('.service-item');
+        const serviceImages = document.querySelectorAll('.service-preview-img');
+
+        serviceItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const targetId = item.getAttribute('data-image');
+
+                // Hide all images
+                serviceImages.forEach(img => {
+                    img.classList.remove('opacity-100');
+                    img.classList.add('opacity-0');
+                });
+
+                // Show target image
+                const targetImg = document.getElementById(targetId);
+                if (targetImg) {
+                    targetImg.classList.remove('opacity-0');
+                    targetImg.classList.add('opacity-100');
+                }
+            });
+        });
+
         // Scroll Reveal Animation Initialization
         document.addEventListener('DOMContentLoaded', () => {
             const observerOptions = {
@@ -769,16 +971,6 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
-                        // Don't unobserve to allow for repeated effects if needed, 
-                        // or keep unobserve if you only want it to happen once.
-                        // For the mobile color shift, we might want it to toggle.
-
-                        // Check if it's a card that needs the color shift
-                        if (entry.target.classList.contains('group')) {
-                            entry.target.classList.add('mobile-active');
-                        }
-
-                        observer.unobserve(entry.target);
                     }
                 });
             }, observerOptions);
@@ -787,21 +979,7 @@
                 observer.observe(el);
             });
 
-            // Separate observer for Mobile Color Reveal (Active State)
-            const mobileColorObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    // Toggle class based on visibility
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('mobile-active');
-                    } else {
-                        entry.target.classList.remove('mobile-active');
-                    }
-                });
-            }, { threshold: 0.6 }); // 60% visibility required to trigger
-
-            // Target the Vibe image container and Service cards
-            const interactives = document.querySelectorAll('.group');
-            interactives.forEach(el => mobileColorObserver.observe(el));
+            // Re-bind hover listeners for dynamic content if needed
         });
 
         // Simulated Google Reviews Data
